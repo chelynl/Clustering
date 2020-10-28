@@ -64,7 +64,7 @@ pairs.panels(teens[samplePoints,terms[31:37]], method = 'pearson', density=T, el
 # Option 1: do nothing, use raw data
 teens.norm <- teens[,terms]
 
-# Option 2: standardize by subtracting the mean of each column and dividing by the std of each column (THIS)
+# Option 2: standardize by subtracting the mean of each column and dividing by the std of each column
 teens.norm <- scale(teens[,terms], center=T, scale=T)
 
 # Option 3: range standardization, putting each variable on a scale from 0 to 1 using fx below
@@ -75,6 +75,8 @@ teens.norm <- as.data.frame(t(apply(teens[,terms], 1, function(x)(x/sum(x)))))
 
 # Option 5: do log transformation by transforming each column, x, into log(x + 1) where 1 is added to the argument to prevent the problem that would be associated with computing log(0) which is undefined.
 teens.norm <- log(teens[,terms]+1)
+                                    
+# Option 2 was used for this project                                   
 
 #----------------------------------------- Visualize Processed Data ----------------------------------------#
 
@@ -117,7 +119,7 @@ plot(cor.pca$x[samplePoints,c(3,4)])
 plot(cor.pca$x[samplePoints,c(3,5)])
 plot(cor.pca$x[samplePoints,c(4,5)])
 mtext("CORRELATION PCA", side = 3, line = -1.5, outer = TRUE)
-
+                                    
 #----------------------- Determine Input Data: Reduce Dimensionality Before Clustering ---------------------#
 
 # Choose specific matrix factorization and rank (dimensionality/number of PCs)
@@ -127,7 +129,8 @@ mtext("CORRELATION PCA", side = 3, line = -1.5, outer = TRUE)
 input <- teens.norm # raw normalized data
 input <- cov.pca$x[,1:4] # first 4 PCs from covariance PCA on normalized data
 input <- cor.pca$x[,1:7] # first 7 PCs from correlation PCA on normalized data-- first 7 PCs seem useful
-
+                                    
+# The first 7 PCs from the correlation PCA was used as reduced input data                                    
 
 pca_var <- cor.pca$sdev^2 # convert std to variance to get eigenvalues
 pca_var_per <- round(pca_var/sum(pca_var) * 100, 1) # get variance percentages for each PC
@@ -197,6 +200,8 @@ fviz_nbclust(input[samplePoints,], kmeans, method = "silhouette", k.max = 10) +
 samplePoints <- sample(1:29074, 2000, replace=F)
 res <- NbClust(input[samplePoints,], distance = "euclidean", min.nc=2, max.nc=10, 
                method = "kmeans", index = "all")
+                                    
+# Option 2 was used to determine 7 clusters for k-means                                    
 
 #------------------------------------- Determine Final Clustering Algorithm ----------------------------------#
 
@@ -206,11 +211,11 @@ final.clusters <- kmeans(input,7)
 teens$cluster <- final.clusters$cluster
 
 
-
 # Hierarchical clustering: not recommended for users of R, as it will require in-memory storage of a similarity matrix that is roughly 10gb
 tree <- flashClust(dist(input),method='centroid')
 teens$cluster <- cutree(tree,k=3)
 
+# I ended up using k-means as my clustering algorithm                                    
 
 #---------------------------------------------- Profile the clusters -----------------------------------------#
 
@@ -240,9 +245,6 @@ clusterProfile = function(df, clusterVar, varsToProfile){
 
 par(mfrow=c(2,2))
 clusterProfile(df=teens, clusterVar='cluster', demographics)
-
-
-
 
 # prop.table(table(teens$gender, teens$cluster))
 
