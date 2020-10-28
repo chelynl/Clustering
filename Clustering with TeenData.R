@@ -73,7 +73,8 @@ teens.norm <- apply(teens[,terms], 2, function(x)(x-min(x))/(max(x)-min(x)))
 # Option 4: standardize each obs so that the rows sum to 1 (represents individual's usage of each word as a proportion of the total number of words they used from this list)
 teens.norm <- as.data.frame(t(apply(teens[,terms], 1, function(x)(x/sum(x)))))
 
-# Option 5: do log transformation by transforming each column, x, into log(x + 1) where 1 is added to the argument to prevent the problem that would be associated with computing log(0) which is undefined.
+# Option 5: do log transformation by transforming each column, x, into log(x + 1) where 1 is added to the 
+# argument to prevent the problem that would be associated with computing log(0) which is undefined.
 teens.norm <- log(teens[,terms]+1)
                                     
 # Option 2 was used for this project                                   
@@ -82,7 +83,8 @@ teens.norm <- log(teens[,terms]+1)
 
 # After transforming your data, you should repeat EDA to make sure nothing changed
 # Consider projection onto principal components (correlation or covariance)
-# We want to better understand the structure of the data cloud in space and to inform any decisions regarding the number of clusters or outliers that could affect the progress of clustering algorithms
+# We want to better understand the structure of the data cloud in space and to inform any decisions regarding the 
+# number of clusters or outliers that could affect the progress of clustering algorithms
 
 cov.pca <- prcomp(teens.norm, scale=F) # covariance PCA
 cor.pca <- prcomp(teens.norm, scale=T) # correlation PCA
@@ -161,7 +163,8 @@ par(mfrow=c(1,1))
 boxplot(SSE~K,data=obj2, ylab = 'SSE Objective Function', xlab='Number of clusters, k', col='violet', main = 'Box plots of SSE for 10 runs of k-means with each k')
 
 # Option 3: compute the trace(Wq) for various numbers of clusters
-# This should decrease monotonically as the number of clusters grows, and we use the maximum of the second differences to determine the number of clusters (i.e. where the slope of the curve is increasing the fastest)
+# This should decrease monotonically as the number of clusters grows, and we use the maximum of the second differences to determine the number of clusters 
+# (i.e. where the slope of the curve is increasing the fastest)
 
 res <- NbClust(input, distance = "euclidean", min.nc=2, max.nc=8, method = "kmeans", index = "tracew")
 (k <- res$Best.nc)
