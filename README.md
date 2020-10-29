@@ -1,4 +1,4 @@
-# k-means
+# Project Overview
 
 Random sample of 30,000 U.S. high-school students who had profiles on a well-known Social Networking Site (SNS) in 2006. 
 
